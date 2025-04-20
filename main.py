@@ -1,0 +1,46 @@
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+# Load dataset
+df = pd.read_csv("healthcare_dataset.csv")
+df.dropna(inplace=True)
+# Remove direct identifiers
+df = df.drop(columns=["Name", "Doctor", "Hospital", "Room Number"])
+
+# Convert dates and calculate Length of Stay
+df["Date of Admission"] = pd.to_datetime(df["Date of Admission"])
+df["Discharge Date"] = pd.to_datetime(df["Discharge Date"])
+df["Length of Stay"] = (df["Discharge Date"] - df["Date of Admission"]).dt.days.clip(lower=0, upper=30)
+
+# Clip Billing Amount
+df["Billing Amount"] = df["Billing Amount"].clip(lower=0, upper=50000)
+
+# Functions
+def get_avg_stay_by_condition(df):
+    return df.groupby("Medical Condition")["Length of Stay"].mean().reset_index(name="Avg_Stay")
+
+def get_sum_billing_by_condition(df):
+    return df.groupby("Medical Condition")["Billing Amount"].sum().reset_index(name="Sum_Billing")
+
+def get_avg_age_by_condition(df):
+    return df.groupby("Medical Condition")["Age"].mean().reset_index(name="Avg_Age")
+
+def get_patient_count_by_condition(df):
+    return df.groupby("Medical Condition").size().reset_index(name="Patient_Count")
+
+# Combine results
+df1 = get_avg_stay_by_condition(df)
+df2 = get_sum_billing_by_condition(df)
+df3 = get_avg_age_by_condition(df)
+df4 = get_patient_count_by_condition(df)
+
+final = df1.merge(df2, on="Medical Condition").merge(df3, on="Medical Condition").merge(df4, on="Medical Condition")
+print(final)
+
+# Optional Plot
+sns.scatterplot(data=final, x="Avg_Stay", y="Sum_Billing", hue="Medical Condition")
+plt.title("Sum Billing vs Avg Stay by Condition (Non-DP)")
+plt.xlabel("Average Stay (days)")
+plt.ylabel("Total Billing ($)")
+plt.show()
