@@ -40,7 +40,7 @@ print(final)
 
 # Visual Plot
 sns.scatterplot(data=final, x="Avg_Stay", y="Sum_Billing", hue="Medical Condition")
-plt.title("Sum Billing vs Avg Stay by Condition (Non-DP)")
+plt.title("Billing Sum vs Avg Stay by Condition (Non-DP)")
 plt.xlabel("Average Stay (days)")
 plt.ylabel("Total Billing ($)")
 plt.show()
