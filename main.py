@@ -17,28 +17,28 @@ df["Length of Stay"] = (df["Discharge Date"] - df["Date of Admission"]).dt.days.
 df["Billing Amount"] = df["Billing Amount"].clip(lower=0, upper=50000)
 
 # Functions
-def get_avg_stay_by_condition(df):
+def average_stay(df):
     return df.groupby("Medical Condition")["Length of Stay"].mean().reset_index(name="Avg_Stay")
 
-def get_sum_billing_by_condition(df):
+def billing_sum(df):
     return df.groupby("Medical Condition")["Billing Amount"].sum().reset_index(name="Sum_Billing")
 
-def get_avg_age_by_condition(df):
+def average_age(df):
     return df.groupby("Medical Condition")["Age"].mean().reset_index(name="Avg_Age")
 
-def get_patient_count_by_condition(df):
+def people_count(df):
     return df.groupby("Medical Condition").size().reset_index(name="Patient_Count")
 
 # Combine results
-df1 = get_avg_stay_by_condition(df)
-df2 = get_sum_billing_by_condition(df)
-df3 = get_avg_age_by_condition(df)
-df4 = get_patient_count_by_condition(df)
+df1 = average_stay(df)
+df2 = billing_sum(df)
+df3 = average_age(df)
+df4 = people_count(df)
 
 final = df1.merge(df2, on="Medical Condition").merge(df3, on="Medical Condition").merge(df4, on="Medical Condition")
 print(final)
 
-# Optional Plot
+# Visual Plot
 sns.scatterplot(data=final, x="Avg_Stay", y="Sum_Billing", hue="Medical Condition")
 plt.title("Sum Billing vs Avg Stay by Condition (Non-DP)")
 plt.xlabel("Average Stay (days)")
