@@ -54,7 +54,7 @@ df3 = dpaverage_age(df)
 df4 = dppeople_count(df)
 
 final = df1.merge(df2, on="Condition").merge(df3, on="Condition").merge(df4, on="Condition")
-print(final)
+final.sort_values(by="Condition", inplace=True)
 
 sns.scatterplot(data=final, x="DP_Avg_Age", y="DP_Sum_Billing", hue="Condition")
 plt.title("DP Sum Billing vs Avg Age by Condition")
