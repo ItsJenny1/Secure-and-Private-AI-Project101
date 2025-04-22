@@ -1,25 +1,21 @@
 
 import pandas as pd
-import pydp as dp  # Import PyDP
+import pydp as dp  
 from pydp.algorithms.laplacian import BoundedMean, BoundedSum
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-# Load dataset
+
 df = pd.read_csv("healthcare_dataset.csv")
 df.dropna(inplace=True)
-# Remove direct identifiers
 df = df.drop(columns=["Name", "Doctor", "Hospital", "Room Number"])
 
-# Convert dates and calculate Length of Stay
 df["Date of Admission"] = pd.to_datetime(df["Date of Admission"])
 df["Discharge Date"] = pd.to_datetime(df["Discharge Date"])
 df["Length of Stay"] = (df["Discharge Date"] - df["Date of Admission"]).dt.days.clip(lower=0, upper=30)
 
-# Clip Billing Amount
 df["Billing Amount"] = df["Billing Amount"].clip(lower=0, upper=50000)
 
-# Functions
 def dpaverage_stay(df, epsilon=0.5):
     results = []
     for condition in df["Medical Condition"].unique():
@@ -52,7 +48,6 @@ def dppeople_count(df):
         results.append({"Condition": condition, "DP_Patient_Count": count})
     return pd.DataFrame(results)
 
-# Combine results
 df1 = dpaverage_stay(df)
 df2 = dpbilling_sum(df)
 df3 = dpaverage_age(df)
@@ -61,14 +56,12 @@ df4 = dppeople_count(df)
 final = df1.merge(df2, on="Condition").merge(df3, on="Condition").merge(df4, on="Condition")
 print(final)
 
-# Visual Plot
 sns.scatterplot(data=final, x="DP_Avg_Age", y="DP_Sum_Billing", hue="Condition")
 plt.title("DP Sum Billing vs Avg Age by Condition")
 plt.xlabel("DP Average Age (years)")
 plt.ylabel("DP Total Billing ($)")
 plt.show()
 
-# Bar graph: DP Billing
 sns.barplot(data=final, x="Condition", y="DP_Sum_Billing", color="orange")
 plt.title("DP: Total Billing per Medical Condition")
 plt.xticks(rotation=45)
@@ -76,7 +69,6 @@ plt.ylabel("DP Total Billing ($)")
 plt.tight_layout()
 plt.show()
 
-# Bar graph: DP Avg Stay
 sns.barplot(data=final, x="Condition", y="DP_Avg_Stay", color="coral")
 plt.title("DP: Average Stay per Medical Condition")
 plt.xticks(rotation=45)
