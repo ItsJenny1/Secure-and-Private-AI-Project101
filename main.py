@@ -45,10 +45,10 @@ plt.ylabel("Total Billing ($)")
 plt.tight_layout()
 plt.show()
 
-sns.barplot(data=final, x="Medical Condition", y="Avg_stay", color="red")
-plt.title("Non-DP: Average Stay per Medical Condition")
+sns.barplot(data=final, x="Medical Condition", y="Avg_Age", color="red")
+plt.title("Non-DP: Average Age per Medical Condition")
 plt.xticks(rotation=45)
-plt.ylabel("Average Stay (days)")
+plt.ylabel("Average Age (years)")
 plt.tight_layout()
 plt.show()
 
