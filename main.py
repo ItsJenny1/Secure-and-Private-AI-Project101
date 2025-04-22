@@ -39,8 +39,24 @@ final = df1.merge(df2, on="Medical Condition").merge(df3, on="Medical Condition"
 print(final)
 
 # Visual Plot
-sns.scatterplot(data=final, x="Avg_Stay", y="Sum_Billing", hue="Medical Condition")
-plt.title("Billing Sum vs Avg Stay by Condition (Non-DP)")
-plt.xlabel("Average Stay (days)")
+sns.scatterplot(data=final, x="Avg_Age", y="Sum_Billing", hue="Medical Condition")
+plt.title("Sum Billing vs Avg Age by Condition (Non-DP)")
+plt.xlabel("Average Age (years)")
 plt.ylabel("Total Billing ($)")
+plt.show()
+
+# Bar graph: Sum Billing by Condition
+sns.barplot(data=final, x="Medical Condition", y="Sum_Billing", color="skyblue")
+plt.title("Non-DP: Total Billing per Medical Condition")
+plt.xticks(rotation=45)
+plt.ylabel("Total Billing ($)")
+plt.tight_layout()
+plt.show()
+
+# Bar graph: Avg Stay by Condition
+sns.barplot(data=final, x="Medical Condition", y="Avg_Age", color="lightgreen")
+plt.title("Non-DP: Average Age per Medical Condition")
+plt.xticks(rotation=45)
+plt.ylabel("Average Age (years)")
+plt.tight_layout()
 plt.show()

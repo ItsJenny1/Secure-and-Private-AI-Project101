@@ -20,7 +20,7 @@ df["Length of Stay"] = (df["Discharge Date"] - df["Date of Admission"]).dt.days.
 df["Billing Amount"] = df["Billing Amount"].clip(lower=0, upper=50000)
 
 # Functions
-def get_dp_avg_stay_by_condition(df, epsilon=1.0):
+def dpaverage_stay(df, epsilon=0.5):
     results = []
     for condition in df["Medical Condition"].unique():
         stays = df[df["Medical Condition"] == condition]["Length of Stay"].tolist()
@@ -28,7 +28,7 @@ def get_dp_avg_stay_by_condition(df, epsilon=1.0):
         results.append({"Condition": condition, "DP_Avg_Stay": dp_mean})
     return pd.DataFrame(results)
 
-def get_dp_sum_billing_by_condition(df, epsilon=1.0):
+def dpbilling_sum(df, epsilon=0.5):
     results = []
     for condition in df["Medical Condition"].unique():
         bills = df[df["Medical Condition"] == condition]["Billing Amount"].astype(int).tolist()  # ✅ Convert to int
@@ -37,7 +37,7 @@ def get_dp_sum_billing_by_condition(df, epsilon=1.0):
     return pd.DataFrame(results)
 
 
-def get_dp_avg_age_by_condition(df, epsilon=1.0):
+def dpaverage_age(df, epsilon=0.5):
     results = []
     for condition in df["Medical Condition"].unique():
         ages = df[df["Medical Condition"] == condition]["Age"].tolist()
@@ -45,7 +45,7 @@ def get_dp_avg_age_by_condition(df, epsilon=1.0):
         results.append({"Condition": condition, "DP_Avg_Age": dp_mean})
     return pd.DataFrame(results)
 
-def get_dp_patient_count_by_condition(df):
+def dppeople_count(df):
     results = []
     for condition in df["Medical Condition"].unique():
         count = len(df[df["Medical Condition"] == condition])
@@ -53,17 +53,33 @@ def get_dp_patient_count_by_condition(df):
     return pd.DataFrame(results)
 
 # Combine results
-df1 = get_dp_avg_stay_by_condition(df)
-df2 = get_dp_sum_billing_by_condition(df)
-df3 = get_dp_avg_age_by_condition(df)
-df4 = get_dp_patient_count_by_condition(df)
+df1 = dpaverage_stay(df)
+df2 = dpbilling_sum(df)
+df3 = dpaverage_age(df)
+df4 = dppeople_count(df)
 
 final = df1.merge(df2, on="Condition").merge(df3, on="Condition").merge(df4, on="Condition")
 print(final)
 
-# Optional Plot
-sns.scatterplot(data=final, x="DP_Avg_Stay", y="DP_Sum_Billing", hue="Condition")
-plt.title("DP Sum Billing vs Avg Stay by Condition")
-plt.xlabel("DP Average Stay (days)")
+# Visual Plot
+sns.scatterplot(data=final, x="DP_Avg_Age", y="DP_Sum_Billing", hue="Condition")
+plt.title("DP Sum Billing vs Avg Age by Condition")
+plt.xlabel("DP Average Age (years)")
 plt.ylabel("DP Total Billing ($)")
+plt.show()
+
+# Bar graph: DP Billing
+sns.barplot(data=final, x="Condition", y="DP_Sum_Billing", color="orange")
+plt.title("DP: Total Billing per Medical Condition")
+plt.xticks(rotation=45)
+plt.ylabel("DP Total Billing ($)")
+plt.tight_layout()
+plt.show()
+
+# Bar graph: DP Avg Stay
+sns.barplot(data=final, x="Condition", y="DP_Avg_Stay", color="coral")
+plt.title("DP: Average Stay per Medical Condition")
+plt.xticks(rotation=45)
+plt.ylabel("DP Average Stay (days)")
+plt.tight_layout()
 plt.show()
