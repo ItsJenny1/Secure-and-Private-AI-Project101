@@ -51,3 +51,5 @@ plt.xticks(rotation=45)
 plt.ylabel("Average Age (years)")
 plt.tight_layout()
 plt.show()
+
+final.to_csv("non_dp_output.csv", index=False)
