@@ -16,7 +16,7 @@ df["Length of Stay"] = (df["Discharge Date"] - df["Date of Admission"]).dt.days.
 
 df["Billing Amount"] = df["Billing Amount"].clip(lower=0, upper=50000)
 
-def dpaverage_stay(df, epsilon=0.05):
+def dpaverage_stay(df, epsilon=5):
     results = []
     for condition in df["Medical Condition"].unique():
         stays = df[df["Medical Condition"] == condition]["Length of Stay"].tolist()
@@ -26,7 +26,7 @@ def dpaverage_stay(df, epsilon=0.05):
 
 
 
-def dpbilling_sum(df, epsilon=0.05):
+def dpbilling_sum(df, epsilon=5):
     results = []
     for condition in df["Medical Condition"].unique():
         bills = df[df["Medical Condition"] == condition]["Billing Amount"].astype(int).tolist()
@@ -35,7 +35,7 @@ def dpbilling_sum(df, epsilon=0.05):
     return pd.DataFrame(results)
 
 
-def dpaverage_age(df, epsilon=0.05):
+def dpaverage_age(df, epsilon=5):
     results = []
     for condition in df["Medical Condition"].unique():
         ages = df[df["Medical Condition"] == condition]["Age"].tolist()
@@ -43,7 +43,7 @@ def dpaverage_age(df, epsilon=0.05):
         results.append({"Condition": condition, "DP_Avg_Age": dp_mean})
     return pd.DataFrame(results)
 
-def dppeople_count(df, epsilon=0.05):
+def dppeople_count(df, epsilon=5):
     results = []
     for condition in df["Medical Condition"].unique():
         count = len(df[df["Medical Condition"] == condition])
